@@ -1,0 +1,19 @@
+{
+  "name": "gajera-infratech-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blue-sync-softwares/gajera-infratech.git"
+  },
+  "author": "Blue Sync Softwares",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blue-sync-softwares/gajera-infratech/issues"
+  },
+  "homepage": "https://github.com/blue-sync-softwares/gajera-infratech#readme"
+}
