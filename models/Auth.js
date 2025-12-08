@@ -74,8 +74,8 @@ authSchema.index({ email: 1 });
 authSchema.index({ phone: 1 });
 authSchema.index({ userId: 1 });
 
-// Generate unique userId before saving
-authSchema.pre('save', async function (next) {
+// Pre-save hook: Generate userId and hash password
+authSchema.pre('save', async function () {
   // Generate userId if not already set
   if (!this.userId) {
     let isUnique = false;
@@ -91,23 +91,11 @@ authSchema.pre('save', async function (next) {
     
     this.userId = newUserId;
   }
-  
-  next();
-});
 
-// Hash password before saving
-authSchema.pre('save', async function (next) {
-  // Only hash the password if it has been modified (or is new)
-  if (!this.isModified('password')) {
-    return next();
-  }
-
-  try {
+  // Hash password if it has been modified (or is new)
+  if (this.isModified('password')) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
   }
 });
 
@@ -123,7 +111,7 @@ authSchema.methods.comparePassword = async function (candidatePassword) {
 // Method to update last login time
 authSchema.methods.updateLastLogin = async function () {
   this.lastLoginTime = new Date();
-  await this.save({ validateBeforeSave: false });
+  await this.save({ validateBeforeSave: false, validateModifiedOnly: true });
 };
 
 // Remove password from JSON response

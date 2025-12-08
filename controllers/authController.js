@@ -116,3 +116,45 @@ exports.logout = (req, res) => {
     return errorResponse(res, 500, error.message || 'Logout failed');
   }
 };
+
+/**
+ * @desc    Check login status
+ * @route   GET /api/v1/auth/check-login
+ * @access  Public
+ */
+exports.checkLogin = async (req, res) => {
+  try {
+    const { extractToken, verifyToken } = require('../utils/jwt');
+    
+    // Extract token from cookie or Authorization header
+    const token = extractToken(req, 'token');
+
+    if (!token) {
+      return successResponse(res, 200, { isLoggedIn: false }, 'Not logged in');
+    }
+
+    // Verify token
+    const decoded = verifyToken(token);
+
+    // Find user by userId from token
+    const user = await Auth.findOne({ userId: decoded.userId });
+
+    if (!user || !user.isActive) {
+      return successResponse(res, 200, { isLoggedIn: false }, 'Invalid or inactive session');
+    }
+
+    // Return user data along with login status
+    return successResponse(res, 200, { 
+      isLoggedIn: true,
+      user: {
+        userId: user.userId,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    }, 'Session valid');
+  } catch (error) {
+    // Token verification failed or expired
+    return successResponse(res, 200, { isLoggedIn: false }, 'Session expired or invalid');
+  }
+};

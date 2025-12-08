@@ -96,7 +96,7 @@ const generateTokenAndSetCookie = (res, payload, cookieName = 'token', expiresIn
   const cookieOptions = {
     httpOnly: true, // Prevents XSS attacks
     secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-    sameSite: 'strict', // CSRF protection
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-origin in production, 'lax' for development
     maxAge: getExpirationMs(expiresIn),
   };
 

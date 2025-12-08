@@ -172,12 +172,11 @@ const websiteSettingsSchema = new mongoose.Schema(
 );
 
 // Ensure only one settings document exists
-websiteSettingsSchema.pre('save', async function (next) {
+websiteSettingsSchema.pre('save', async function () {
   const count = await mongoose.model('WebsiteSettings').countDocuments();
   if (count > 0 && this.isNew) {
     throw new Error('Website settings already exist. Please update the existing settings.');
   }
-  next();
 });
 
 // Method to get full address as string

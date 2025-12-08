@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
-const { register, login, logout } = require('../controllers/authController');
+const { register, login, logout, checkLogin } = require('../controllers/authController');
 const { protect, authorizeAdmin } = require('../middleware/auth');
 
 // Register route (Admin only)
@@ -61,5 +61,8 @@ router.post(
 
 // Logout route
 router.post('/logout', logout);
+
+// Check login status route
+router.post('/check-login', checkLogin);
 
 module.exports = router;

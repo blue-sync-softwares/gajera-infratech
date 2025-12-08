@@ -12,7 +12,7 @@ const { protect, authorizeAdmin } = require('../middleware/auth');
 // Validation rules
 const homeSettingsValidation = [
   body('heroTitle')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Hero title is required')
@@ -20,7 +20,7 @@ const homeSettingsValidation = [
     .withMessage('Hero title cannot exceed 200 characters'),
 
   body('heroDescription')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Hero description is required')
@@ -28,17 +28,17 @@ const homeSettingsValidation = [
     .withMessage('Hero description cannot exceed 500 characters'),
 
   body('featuredProjects')
-    .optional()
+    .optional({ checkFalsy: true })
     .isArray()
     .withMessage('Featured projects must be an array'),
 
   body('featuredProjects.*')
-    .optional()
+    .optional({ checkFalsy: true })
     .isMongoId()
     .withMessage('Each featured project must be a valid MongoDB ID'),
 
   body('featureTitle')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Feature title is required')
@@ -46,7 +46,7 @@ const homeSettingsValidation = [
     .withMessage('Feature title cannot exceed 200 characters'),
 
   body('featureDescription')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Feature description is required')
@@ -54,7 +54,7 @@ const homeSettingsValidation = [
     .withMessage('Feature description cannot exceed 500 characters'),
 
   body('features')
-    .optional()
+    .optional({ checkFalsy: true })
     .isArray()
     .withMessage('Features must be an array')
     .custom((value) => {
@@ -65,13 +65,13 @@ const homeSettingsValidation = [
     }),
 
   body('features.*.key')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Feature key is required'),
 
   body('features.*.title')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Feature title is required')
@@ -79,7 +79,7 @@ const homeSettingsValidation = [
     .withMessage('Feature title cannot exceed 100 characters'),
 
   body('features.*.description')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Feature description is required')
@@ -87,17 +87,17 @@ const homeSettingsValidation = [
     .withMessage('Feature description cannot exceed 300 characters'),
 
   body('features.*.image.url')
-    .optional()
+    .optional({ checkFalsy: true })
     .notEmpty()
     .withMessage('Feature image URL is required'),
 
   body('features.*.image.public_id')
-    .optional()
+    .optional({ checkFalsy: true })
     .notEmpty()
     .withMessage('Feature image public_id is required'),
 
   body('legacyTitle')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Legacy title is required')
@@ -105,7 +105,7 @@ const homeSettingsValidation = [
     .withMessage('Legacy title cannot exceed 200 characters'),
 
   body('legacyDescription')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Legacy description is required')
@@ -113,24 +113,24 @@ const homeSettingsValidation = [
     .withMessage('Legacy description cannot exceed 1000 characters'),
 
   body('legacyAwardTitle')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .isLength({ max: 100 })
     .withMessage('Legacy award title cannot exceed 100 characters'),
 
   body('legacyAwardYears')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .isLength({ max: 50 })
     .withMessage('Award years cannot exceed 50 characters'),
 
   body('topTestimonial')
-    .optional()
+    .optional({ checkFalsy: true })
     .isMongoId()
     .withMessage('Top testimonial must be a valid MongoDB ID'),
 
   body('metrics')
-    .optional()
+    .optional({ checkFalsy: true })
     .isArray()
     .withMessage('Metrics must be an array')
     .custom((value) => {
@@ -141,13 +141,13 @@ const homeSettingsValidation = [
     }),
 
   body('metrics.*.key')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Metric key is required'),
 
   body('metrics.*.title')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Metric title is required')
@@ -155,7 +155,7 @@ const homeSettingsValidation = [
     .withMessage('Metric title cannot exceed 100 characters'),
 
   body('metrics.*.metricValue')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty()
     .withMessage('Metric value is required')
