@@ -55,6 +55,7 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/api/v1/upload', require('./routes/upload'));
 app.use('/api/v1/auth', require('./routes/auth'));
+app.use('/api/v1/users', require('./routes/users'));
 app.use('/api/v1/website/settings', require('./routes/websiteSettings'));
 app.use('/api/v1/website/home-settings', require('./routes/homeSettings'));
 app.use('/api/v1/website/contact-us-settings', require('./routes/contactUsSettings'));
