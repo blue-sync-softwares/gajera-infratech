@@ -147,17 +147,17 @@ projectSchema.index({ business_name_slug: 1 });
 projectSchema.index({ project_type: 1 });
 
 // Auto-generate project_id before saving (format: PRJ + timestamp + random)
-projectSchema.pre('save', async function(next) {
+projectSchema.pre('save', async function() {
   if (this.isNew && !this.project_id) {
     const timestamp = Date.now().toString().slice(-6);
     const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
     this.project_id = `PRJ${timestamp}${random}`;
   }
-  next();
+  // next();
 });
 
 // Generate slug from project name if not provided
-projectSchema.pre('validate', function(next) {
+projectSchema.pre('validate', function() {
   if (!this.slug && this.project_name) {
     this.slug = this.project_name
       .toLowerCase()
@@ -170,7 +170,7 @@ projectSchema.pre('validate', function(next) {
 });
 
 // Validate unique rankings in project_images array
-projectSchema.pre('save', function(next) {
+projectSchema.pre('save', function() {
   if (this.project_images && this.project_images.length > 0) {
     const rankings = this.project_images.map(img => img.ranking);
     const uniqueRankings = new Set(rankings);
