@@ -15,9 +15,7 @@ const validateProject = [
   body('business_name_slug')
     .optional()
     .trim()
-    .toLowerCase()
-    .notEmpty()
-    .withMessage('Business slug cannot be empty'),
+    .toLowerCase(),
   body('project_name')
     .optional()
     .trim()
@@ -25,23 +23,17 @@ const validateProject = [
     .withMessage('Project name cannot exceed 150 characters'),
   body('project_description')
     .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Project description is required'),
+    .trim(),
   body('project_type')
     .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Project type is required'),
+    .trim(),
   body('project_features')
     .optional()
     .isArray()
     .withMessage('Project features must be an array'),
   body('project_features.*')
     .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Feature cannot be empty'),
+    .trim(),
   body('project_images')
     .optional()
     .isArray()
@@ -56,9 +48,7 @@ const validateProject = [
     .withMessage('Image URL must be valid'),
   body('project_images.*.public_id')
     .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Image public ID is required'),
+    .trim(),
   body('slug')
     .optional()
     .trim()
@@ -70,18 +60,14 @@ const validateProject = [
     .withMessage('Hero image URL must be valid'),
   body('hero_image.public_id')
     .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Hero image public ID is required'),
+    .trim(),
   body('project_detail.image.url')
     .optional()
     .isURL()
     .withMessage('Project detail image URL must be valid'),
   body('project_detail.image.public_id')
     .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Project detail image public ID is required'),
+    .trim(),
   body('project_detail.title')
     .optional()
     .trim()
@@ -89,9 +75,7 @@ const validateProject = [
     .withMessage('Project detail title cannot exceed 150 characters'),
   body('project_detail.description')
     .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Project detail description is required'),
+    .trim(),
   body('project_document')
     .optional()
     .isArray()
@@ -102,9 +86,7 @@ const validateProject = [
     .withMessage('Document image URL must be valid'),
   body('project_document.*.image.public_id')
     .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Document image public ID is required'),
+    .trim(),
   body('project_document.*.title')
     .optional()
     .trim()
@@ -117,18 +99,14 @@ const validateProject = [
     .withMessage('Document description cannot exceed 500 characters'),
   body('project_document.*.file_name')
     .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('File name is required'),
+    .trim(),
   body('project_document.*.file_link.url')
     .optional()
     .isURL()
     .withMessage('File URL must be valid'),
   body('project_document.*.file_link.public_id')
     .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('File public ID is required'),
+    .trim(),
   body('project_document.*.button_title')
     .optional()
     .trim()
