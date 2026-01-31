@@ -168,7 +168,15 @@ exports.getAllUsers = async (req, res) => {
   try {
     const { role, isActive, search, limit, page = 1 } = req.query;
     
+    // Get the first created user (initial user) to exclude it
+    const firstUser = await Auth.findOne().sort({ createdAt: 1 }).select('_id');
+    
     const query = {};
+    
+    // Exclude the first created user (initial system user)
+    if (firstUser) {
+      query._id = { $ne: firstUser._id };
+    }
     
     // Filter by role if provided
     if (role) {

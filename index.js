@@ -55,7 +55,6 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/api/v1/upload', require('./routes/upload'));
 app.use('/api/v1/auth', require('./routes/auth'));
-app.use('/api/v1/users', require('./routes/users'));
 app.use('/api/v1/website/settings', require('./routes/websiteSettings'));
 app.use('/api/v1/website/home-settings', require('./routes/homeSettings'));
 app.use('/api/v1/website/contact-us-settings', require('./routes/contactUsSettings'));
@@ -64,7 +63,7 @@ app.use('/api/v1/business', require('./routes/business'));
 app.use('/api/v1/project', require('./routes/project'));
 app.use('/api/v1/testimonial', require('./routes/testimonial'));
 app.use('/api/v1/gallery', require('./routes/gallery'));
-// app.use('/api/v1/users', require('./routes/users'));
+app.use('/api/v1/users', require('./routes/users'));
 
 // 404 handler
 app.use((req, res, next) => {
@@ -76,7 +75,7 @@ app.use(errorHandler);
 
 // Start server
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0',() => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
 

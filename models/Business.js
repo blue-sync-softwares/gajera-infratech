@@ -19,17 +19,17 @@ const businessSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Business overview is required'],
     trim: true,
-    maxlength: [700, 'Business overview cannot exceed 700 characters']
+    // maxlength: [700, 'Business overview cannot exceed 700 characters']
   },
   business_description: {
     type: String,
-    required: [true, 'Business description is required'],
+    // required: [true, 'Business description is required'],
     trim: true
   },
   business_tagline: {
     type: String,
     trim: true,
-    maxlength: [200, 'Business tagline cannot exceed 200 characters']
+    // maxlength: [200, 'Business tagline cannot exceed 200 characters']
   },
   ctaTitle: {
     type: String,
@@ -43,18 +43,18 @@ const businessSchema = new mongoose.Schema({
   business_gallery: [{
     image_title: {
       type: String,
-      required: [true, 'Gallery image title is required'],
+      // required: [true, 'Gallery image title is required'],
       trim: true,
       maxlength: [100, 'Gallery image title cannot exceed 100 characters']
     },
     image_src: {
       url: {
         type: String,
-        required: [true, 'Gallery image URL is required']
+        // required: [true, 'Gallery image URL is required']
       },
       public_id: {
         type: String,
-        required: [true, 'Gallery image public ID is required']
+        // required: [true, 'Gallery image public ID is required']
       }
     }
   }],
@@ -73,38 +73,38 @@ const businessSchema = new mongoose.Schema({
   hero_image: {
     url: {
       type: String,
-      required: [true, 'Hero image URL is required']
+      // required: [true, 'Hero image URL is required']
     },
     public_id: {
       type: String,
-      required: [true, 'Hero image public ID is required']
+      // required: [true, 'Hero image public ID is required']
     }
   },
   featured_image: {
     url: {
       type: String,
-      required: [true, 'Featured image URL is required']
+      // required: [true, 'Featured image URL is required']
     },
     public_id: {
       type: String,
-      required: [true, 'Featured image public ID is required']
+      // required: [true, 'Featured image public ID is required']
     }
   },
   businessStats: [{
     uniqueKey: {
       type: String,
-      required: [true, 'Stat unique key is required'],
+      // required: [true, 'Stat unique key is required'],
       trim: true
     },
     title: {
       type: String,
-      required: [true, 'Stat title is required'],
+      // required: [true, 'Stat title is required'],
       trim: true,
       maxlength: [100, 'Stat title cannot exceed 100 characters']
     },
     statValue: {
       type: String,
-      required: [true, 'Stat value is required'],
+      // required: [true, 'Stat value is required'],
       trim: true,
       maxlength: [50, 'Stat value cannot exceed 50 characters']
     }
@@ -143,7 +143,7 @@ businessSchema.pre('save', function(next) {
       return next(new Error('All business stat unique keys must be unique'));
     }
   }
-  next();
+  // next();
 });
 
 // Generate slug from business title if not provided
@@ -156,7 +156,7 @@ businessSchema.pre('validate', function(next) {
       .replace(/-+/g, '-')
       .trim();
   }
-  next();
+  // next();
 });
 
 module.exports = mongoose.model('Business', businessSchema);

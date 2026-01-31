@@ -15,7 +15,7 @@ const { protect, authorizeAdmin } = require('../middleware/auth');
  * @desc    Get all users with optional filters
  * @access  Private/Admin
  */
-router.get(
+router.post(
   '/',
   protect,
   authorizeAdmin,
@@ -27,7 +27,7 @@ router.get(
  * @desc    Get single user by ID
  * @access  Private/Admin
  */
-router.get(
+router.post(
   '/:id',
   protect,
   authorizeAdmin,

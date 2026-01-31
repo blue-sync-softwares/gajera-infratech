@@ -89,23 +89,19 @@ const validateBusiness = [
     .isMongoId()
     .withMessage('Each project must be a valid MongoDB ID'),
   body('hero_image.url')
-    .optional()
+    .optional({ checkFalsy: true })
     .isURL()
     .withMessage('Hero image URL must be valid'),
   body('hero_image.public_id')
-    .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Hero image public ID is required'),
+    .optional({ checkFalsy: true })
+    .trim(),
   body('featured_image.url')
-    .optional()
+    .optional({ checkFalsy: true })
     .isURL()
     .withMessage('Featured image URL must be valid'),
   body('featured_image.public_id')
-    .optional()
-    .trim()
-    .notEmpty()
-    .withMessage('Featured image public ID is required'),
+    .optional({ checkFalsy: true })
+    .trim(),
   body('businessStats')
     .optional()
     .isArray()

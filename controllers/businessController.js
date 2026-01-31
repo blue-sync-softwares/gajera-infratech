@@ -9,7 +9,7 @@ const { successResponse, errorResponse } = require('../utils/response');
 const createBusiness = async (req, res, next) => {
   try {
     const business = await Business.create(req.body);
-    
+    console.log('Business created:', business);
     successResponse(res, 201, business, 'Business created successfully');
   } catch (error) {
     if (error.code === 11000) {
