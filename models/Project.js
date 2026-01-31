@@ -166,7 +166,7 @@ projectSchema.pre('validate', function(next) {
       .replace(/-+/g, '-')
       .trim();
   }
-  next();
+  // next();
 });
 
 // Validate unique rankings in project_images array
@@ -178,7 +178,7 @@ projectSchema.pre('save', function(next) {
       return next(new Error('All image rankings must be unique'));
     }
   }
-  next();
+  // next();
 });
 
 // Virtual to check if business exists
