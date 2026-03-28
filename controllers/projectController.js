@@ -10,8 +10,9 @@ const { successResponse, errorResponse } = require('../utils/response');
 const createProject = async (req, res, next) => {
   try {
     // Validate if business exists
+    let businessExists = null;
     if (req.body.business_name_slug) {
-      const businessExists = await Business.findOne({ slug: req.body.business_name_slug });
+      businessExists = await Business.findOne({ slug: req.body.business_name_slug });
       if (!businessExists) {
         return errorResponse(res, 404, 'Business not found with the provided slug');
       }
@@ -19,8 +20,10 @@ const createProject = async (req, res, next) => {
 
     const project = await Project.create(req.body);
 
-    businessExists.project_details.push(project._id);
-    await businessExists.save();
+    if (businessExists) {
+      businessExists.project_details.push(project._id);
+      await businessExists.save();
+    }
     
     successResponse(res, 201, project, 'Project created successfully');
   } catch (error) {
