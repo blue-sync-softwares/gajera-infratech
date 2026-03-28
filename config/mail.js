@@ -1,68 +1,65 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
 
 /**
- * Email transporter configuration
- * Creates a reusable SMTP transporter for sending emails
+ * Force IPv4 globally - disable IPv6 DNS lookups
+ * This is critical for preventing ENETUNREACH errors
+ */
+dns.setDefaultResultOrder('ipv4first');
+
+/**
+ * Email transporter configuration with Brevo (Sendinblue) SMTP
+ * Heavily optimized for browser and production environments
  */
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.EMAIL_PORT) || 465,
-  secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for 587
+  host: process.env.EMAIL_HOST || 'smtp-relay.brevo.com',
+  port: parseInt(process.env.EMAIL_PORT) || 587,
+  secure: process.env.EMAIL_SECURE === 'true' ? true : false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  family: 4, // Use IPv4
-  // Connection pool for better performance
+  // Critical: Force IPv4 only, no IPv6 fallback
+  family: 4,
+  connectionUrl: undefined,
+  // Connection pooling
   pool: {
-    maxConnections: 5,
-    maxMessages: 100,
-    rateDelta: 2000,
-    rateLimit: 5,
+    maxConnections: 1,
+    maxMessages: 50,
+    rateDelta: 1000,
+    rateLimit: 1,
   },
-  // Socket/connection timeout settings
-  socketTimeout: 5000, // 5 seconds
-  connectionTimeout: 5000, // 5 seconds
-  greetingTimeout: 5000, // 5 seconds
-  // TLS configuration
+  // Very extended timeouts for browser requests (can be slow)
+  socketTimeout: 45000, // 45 seconds
+  connectionTimeout: 45000, // 45 seconds
+  greetingTimeout: 15000, // 15 seconds
+  // TLS settings
   tls: {
     rejectUnauthorized: false,
     minVersion: 'TLSv1.2',
+    servername: process.env.EMAIL_HOST || 'smtp-relay.brevo.com',
   },
+  // Single connection (avoids IPv6 multiplexing issues)
+  maxConnections: 1,
+  maxMessages: 50,
+  maxRetries: 0, // Retries handled at emailService level
 });
 
 /**
- * Verify transporter configuration on startup (non-blocking)
- * Uses async/await to allow server to start even if email fails
+ * Non-blocking verification on startup
  */
-(async () => {
-  try {
-    await new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject(new Error('Timeout'));
-      }, 8000);
-      
-      transporter.verify((error, success) => {
-        clearTimeout(timeout);
-        if (error) reject(error);
-        else resolve(success);
-      });
-    });
-    
-    console.log('✅ Email service is ready to send messages');
-  } catch (error) {
-    console.warn('⚠️  Email service warning:', error.message);
-    console.log('\n📝 Email Troubleshooting:');
-    console.log('Host:', process.env.EMAIL_HOST);
-    console.log('Port:', process.env.EMAIL_PORT);
-    console.log('Secure:', process.env.EMAIL_SECURE);
-    console.log('\n🔧 Try these fixes:');
-    console.log('1. Verify credentials in .env are correct');
-    console.log('2. For Hostinger: Check if SMTP is enabled for your email account');
-    console.log('3. Try port 465 (SSL) or port 587 (TLS)');
-    console.log('4. Check firewall isn\'t blocking SMTP ports');
-    console.log('\n⚡ Server will continue running. Test the contact form anyway.\n');
-  }
-})();
+setImmediate(() => {
+  transporter.verify((error, success) => {
+    if (error) {
+      console.warn('⚠️  Email service warning:', error.message);
+      console.log('\n📧 Brevo SMTP Configuration:');
+      console.log('   Host:', process.env.EMAIL_HOST);
+      console.log('   Port:', process.env.EMAIL_PORT);
+      console.log('   Protocol: TLS (IPv4-only)');
+    } else {
+      console.log('✅ Email service ready (Brevo SMTP - IPv4)');
+    }
+  });
+});
 
 module.exports = transporter;

@@ -1,6 +1,30 @@
 const transporter = require('../config/mail');
 
 /**
+ * @desc    Retry logic with exponential backoff
+ * @param   {Function} fn - Function to retry
+ * @param   {number} maxRetries - Maximum retry attempts
+ * @param   {number} initialDelay - Initial delay in ms
+ * @returns {Promise<any>} Result from function
+ */
+const retryWithBackoff = async (fn, maxRetries = 2, initialDelay = 1000) => {
+  let lastError;
+  for (let i = 0; i <= maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (i < maxRetries) {
+        const delay = initialDelay * Math.pow(2, i); // Exponential backoff
+        console.log(`📧 Email send attempt ${i + 1} failed, retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  throw lastError;
+};
+
+/**
  * @desc    Send contact form email to business owner
  * @param   {Object} contactData - Contact form data
  * @param   {string} contactData.name - Sender's name
@@ -144,13 +168,20 @@ Received on: ${new Date().toLocaleString()}
       subject: `New Contact Form Submission from ${name}`,
       text: textTemplate,
       html: htmlTemplate,
-      replyTo: mobile, // Optional: allow replying to sender's contact
     };
 
-    // Send email
-    const info = await transporter.sendMail(mailOptions);
+    // Send email with retry logic and extended timeout
+    // Browser requests need more retries due to IPv6 fallback delays
+    const info = await retryWithBackoff(async () => {
+      return await Promise.race([
+        transporter.sendMail(mailOptions),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Email send timeout after 45 seconds')), 45000)
+        ),
+      ]);
+    }, 3, 2000); // 3 retries with 2, 4, 8 second delays = up to 14 seconds retry time
     
-    console.log(`Email sent successfully. Message ID: ${info.messageId}`);
+    console.log(`✅ Email sent via Brevo. ID: ${info.messageId}`);
     
     return {
       success: true,
@@ -158,11 +189,29 @@ Received on: ${new Date().toLocaleString()}
       timestamp: new Date().toISOString(),
     };
   } catch (error) {
-    console.error('Error sending email:', error.message);
+    console.error('❌ Email send error:', error.message);
+    console.error('   Error code:', error.code);
+    
+    // Specific error messages for Brevo and common issues
+    let errorDetails = error.message;
+    if (error.message.includes('ENETUNREACH')) {
+      errorDetails = 'Network unreachable - connection issue detected';
+    } else if (error.message.includes('ENOTFOUND')) {
+      errorDetails = 'Cannot resolve Brevo SMTP server DNS';
+    } else if (error.message.includes('ECONNREFUSED')) {
+      errorDetails = 'Connection refused by Brevo SMTP server';
+    } else if (error.message.includes('ETIMEDOUT')) {
+      errorDetails = 'Connection timed out - network may be slow';
+    } else if (error.message.includes('timeout')) {
+      errorDetails = 'SMTP request timed out - Brevo server delayed or unreachable';
+    } else if (error.message.includes('Authentication') || error.message.includes('535')) {
+      errorDetails = 'Invalid Brevo SMTP credentials - check .env configuration';
+    }
+    
     throw {
       success: false,
-      error: 'Failed to send email',
-      details: error.message,
+      error: 'Failed to send email via Brevo',
+      details: errorDetails,
     };
   }
 };
