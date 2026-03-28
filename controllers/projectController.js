@@ -18,6 +18,9 @@ const createProject = async (req, res, next) => {
     }
 
     const project = await Project.create(req.body);
+
+    businessExists.project_details.push(project._id);
+    await businessExists.save();
     
     successResponse(res, 201, project, 'Project created successfully');
   } catch (error) {
