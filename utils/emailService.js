@@ -63,7 +63,7 @@ Received on: ${new Date().toLocaleString()}
         {
           sender: {
             email: process.env.EMAIL_USER,
-            name: "Gajera Infratech Contact Form",
+            name: "Gajera Brothers Contact Form",
           },
           to: [
             {
