@@ -12,6 +12,7 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  family: 4, // Use IPv4
   // Connection pool for better performance
   pool: {
     maxConnections: 5,
